@@ -13,25 +13,53 @@ class _OnboardingState extends State<Onboarding> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-        margin: EdgeInsets.only(top: 40.0),
-        child: Column(
-          children: [
-            Image.asset(
-              "images/onboard.png",
-              height: 400,
-              width: MediaQuery.of(context).size.width,
-            ),
-            SizedBox(height: 20.0),
-            Text(
-              "The Fastest\nFood Delivery",
-              style: AppWidget.HeadlineTextFeildStyle(),
-            ),
-            Text(
-              "Craving something delicius? Order now and get your favorites delivered fast!",
-              style: AppWidget.SimpleTextFeildStyle(),
-            ),
-          ],
+
+     
+      body: SingleChildScrollView( //el SingleChildScrollView sirve para que no truene en pantallas pequeñas
+        child: Container(
+          margin: EdgeInsets.only(top: 40.0),
+          child: Column(
+            children: [
+              Image.asset(
+                "images/onboard.png",
+                height: 400,
+                width: MediaQuery.of(context).size.width,
+              ),
+              SizedBox(height: 20.0),
+              Text(
+                "The Fastest\nFood Delivery",
+                textAlign: TextAlign.center,
+                style: AppWidget.HeadlineTextFeildStyle(),
+              ),
+              SizedBox(
+                height: 30.0,
+              ), // Aquí ya puedes poner 30 o más sin que truene
+              Text(
+                "Craving something delicius? \nOrder now and get your favorites\ndelivered fast!",
+                textAlign: TextAlign.center,
+                style: AppWidget.SimpleTextFeildStyle(),
+              ),
+              SizedBox(height: 30.0),
+              Container(
+                height: 60,
+                width: MediaQuery.of(context).size.width / 2,
+                decoration: BoxDecoration(
+                  color: Color(0xff8c592a),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Text(
+                    "Get Started",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

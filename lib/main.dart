@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app_8sc_2025/pages/home.dart';
 import 'package:food_delivery_app_8sc_2025/pages/onboarding.dart';
 
 void main() {
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Onboarding(),
+      //home: Onboarding(),
+      home: Home(),
     );
   }
 }
