@@ -12,4 +12,12 @@ class AppWidget {
   static TextStyle SimpleTextFeildStyle() {
     return TextStyle(color: Colors.black, fontSize: 18.0);
   }
+
+  static TextStyle whiteTextFeildStyle() {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+    );
+  }
 }
