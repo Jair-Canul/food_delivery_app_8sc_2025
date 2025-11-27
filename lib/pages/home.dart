@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app_8sc_2025/model/burger_model.dart';
 import 'package:food_delivery_app_8sc_2025/model/category_model.dart';
 import 'package:food_delivery_app_8sc_2025/model/pizza_model.dart';
+import 'package:food_delivery_app_8sc_2025/pages/detail_page.dart';
 import 'package:food_delivery_app_8sc_2025/service/burger_data.dart';
 import 'package:food_delivery_app_8sc_2025/service/category_data.dart';
 import 'package:food_delivery_app_8sc_2025/service/pizza_data.dart';
@@ -193,20 +194,31 @@ class _HomeState extends State<Home> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                height: 50,
-                width: 80,
-                decoration: BoxDecoration(
-                  color: Color(0xffef2b39),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(20),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DetailPage(image: image, name: name, price: price),
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 50,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    color: Color(0xffef2b39),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(20),
+                    ),
                   ),
-                ),
-                child: Icon(
-                  Icons.arrow_forward,
-                  color: Colors.white,
-                  size: 30.0,
+                  child: Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 30.0,
+                  ),
                 ),
               ),
             ],

@@ -40,23 +40,20 @@ class _BottomNavState extends State<BottomNav> {
         height: 70,
         backgroundColor: Colors.white,
         color: Colors.black,
-        animationDuration: Duration(milliseconds: 500), 
-        onTap: (int index){
+        animationDuration: Duration(milliseconds: 500),
+        onTap: (int index) {
           setState(() {
             currentTabIndex = index;
           });
         },
         items: [
-          Icon(
-            Icons.home,
-            color: Colors.white,
-            size: 30.0,
-          ),
+          Icon(Icons.home, color: Colors.white, size: 30.0),
           Icon(Icons.shopping_bag, color: Colors.white, size: 30.0),
           Icon(Icons.wallet, color: Colors.white, size: 30.0),
           Icon(Icons.person, color: Colors.white, size: 30.0),
-        ],),
-        body: pages[currentTabIndex],
-    )
+        ],
+      ),
+      body: pages[currentTabIndex],
+    );
   }
 }
