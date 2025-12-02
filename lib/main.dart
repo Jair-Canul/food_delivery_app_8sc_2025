@@ -1,10 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app_8sc_2025/pages/bottomnav.dart';
 import 'package:food_delivery_app_8sc_2025/pages/detail_page.dart';
 import 'package:food_delivery_app_8sc_2025/pages/home.dart';
+import 'package:food_delivery_app_8sc_2025/pages/login.dart';
+import 'package:food_delivery_app_8sc_2025/pages/onboarding.dart';
 import 'package:food_delivery_app_8sc_2025/pages/signup.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -36,7 +41,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       //home: Onboarding(),
-      home: SignUp(),
+      home: LogIn(),
     );
   }
 }

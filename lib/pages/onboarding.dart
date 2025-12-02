@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app_8sc_2025/pages/bottomnav.dart';
 import 'package:food_delivery_app_8sc_2025/service/widget_support.dart';
 
 class Onboarding extends StatefulWidget {
@@ -14,8 +15,8 @@ class _OnboardingState extends State<Onboarding> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-     
-      body: SingleChildScrollView( //el SingleChildScrollView sirve para que no truene en pantallas pequeñas
+      body: SingleChildScrollView(
+        //el SingleChildScrollView sirve para que no truene en pantallas pequeñas
         child: Container(
           margin: EdgeInsets.only(top: 40.0),
           child: Column(
@@ -40,20 +41,28 @@ class _OnboardingState extends State<Onboarding> {
                 style: AppWidget.SimpleTextFeildStyle(),
               ),
               SizedBox(height: 30.0),
-              Container(
-                height: 60,
-                width: MediaQuery.of(context).size.width / 2,
-                decoration: BoxDecoration(
-                  color: Color(0xff8c592a),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Center(
-                  child: Text(
-                    "Get Started",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BottomNav()),
+                  );
+                },
+                child: Container(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width / 2,
+                  decoration: BoxDecoration(
+                    color: Color(0xff8c592a),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Get Started",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

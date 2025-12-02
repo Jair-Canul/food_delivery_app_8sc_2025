@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "829191611648",
+    "project_id": "foodgo-2dce6",
+    "storage_bucket": "foodgo-2dce6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829191611648:android:ea3fe494dd80d221a77fe5",
+        "android_client_info": {
+          "package_name": "com.example.food_delivery_app_8sc_2025"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPiJc7vnQKiW_-5GbhKorKNraS4xnugCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

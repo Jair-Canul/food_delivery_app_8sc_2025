@@ -1,68 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app_8sc_2025/pages/login.dart';
+import 'package:food_delivery_app_8sc_2025/pages/signup.dart';
 import 'package:food_delivery_app_8sc_2025/service/widget_support.dart';
-import 'package:random_string/random_string.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+class LogIn extends StatefulWidget {
+  const LogIn({super.key});
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<LogIn> createState() => _LogInState();
 }
 
-class _SignUpState extends State<SignUp> {
-  String email = "", password = "", name = "";
-  TextEditingController namecontroller = new TextEditingController();
-  TextEditingController passwordcontroller = new TextEditingController();
-  TextEditingController mailcontroller = new TextEditingController();
-
-  registration() async {
-    if (password != null &&
-        namecontroller.text != "" &&
-        namecontroller.text != "") {
-      try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password);
-        String Id = randomAlphaNumeric(10);
-
-        Map<String, dynamic> UserInfoMap = {
-          "Name": namecontroller.text,
-          "Email": mailcontroller.text,
-        };
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.orangeAccent,
-              content: Text(
-                "Password provided is too weak.",
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
-          );
-        } else if (e.code == 'email-already-in-use') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.orangeAccent,
-              content: Text(
-                "Account Already exists",
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
-          );
-        }
-      }
-    }
-  }
-
+class _LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: Container(
-        // Este Container no necesita 'child:'
         child: SingleChildScrollView(
           // Agregamos un padding final al SingleChildScrollView para que el contenido no quede pegado al borde y dé espacio para el scroll
           padding: EdgeInsets.only(bottom: 50.0),
@@ -131,28 +84,13 @@ class _SignUpState extends State<SignUp> {
                         SizedBox(height: 20),
                         Center(
                           child: Text(
-                            "SignUp",
+                            "LogIn",
                             style: AppWidget.HeadlineTextFeildStyle(),
                           ),
                         ),
-                        SizedBox(height: 30.0),
-                        // Campos de Texto (Name, Email, Password)
-                        Text("Name", style: AppWidget.SignUpTextFeildStyle()),
-                        SizedBox(height: 5.0),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFFececf8),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Enter Name",
-                              prefixIcon: Icon(Icons.person_outline),
-                            ),
-                          ),
-                        ),
+                        SizedBox(height: 10.0),
 
+                        // Campos de Texto (Name, Email, Password)
                         SizedBox(height: 20.0),
                         Text("Email", style: AppWidget.SignUpTextFeildStyle()),
                         SizedBox(height: 5.0),
@@ -189,15 +127,22 @@ class _SignUpState extends State<SignUp> {
                             ),
                           ),
                         ),
-
-                        SizedBox(height: 30.0),
-
+                        SizedBox(height: 10.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Forgot Password?",
+                              style: AppWidget.SimpleTextFeildStyle(),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 40.0),
                         // Botón Sign Up
                         Center(
                           child: Container(
                             width: 200,
-                            // AJUSTE FINAL: Reducimos la altura del botón (80 es mucho) y le damos borde
-                            height: 50,
+                            height: 60,
                             decoration: BoxDecoration(
                               color: Color(0xffef2b39),
                               borderRadius: BorderRadius.circular(
@@ -206,7 +151,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             child: Center(
                               child: Text(
-                                "Sign Up",
+                                "Log In",
                                 style: AppWidget.whiteTextFeildStyle(),
                               ),
                             ),
@@ -217,7 +162,7 @@ class _SignUpState extends State<SignUp> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Already have an account? ",
+                              "Don't have an account? ",
                               style: AppWidget.SimpleTextFeildStyle(),
                             ),
                             SizedBox(width: 10.0),
@@ -226,12 +171,12 @@ class _SignUpState extends State<SignUp> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => LogIn(),
+                                    builder: (context) => SignUp(),
                                   ),
                                 );
                               },
                               child: Text(
-                                "Login",
+                                "SignUp",
                                 style: AppWidget.boldTextFeildStyle(),
                               ),
                             ),
@@ -252,5 +197,3 @@ class _SignUpState extends State<SignUp> {
     );
   }
 }
-
-///2:10:40
