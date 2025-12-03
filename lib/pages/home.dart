@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(left: 10.0, top: 10.0),
+        margin: EdgeInsets.only(left: 20.0, top: 40.0),
         child: Column(
           children: [
             Row(
@@ -55,7 +55,7 @@ class _HomeState extends State<Home> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
+                  padding: const EdgeInsets.only(right: 20.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.asset(
@@ -68,14 +68,14 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-            SizedBox(height: 10.0),
+            SizedBox(height: 30.0),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.only(left: 10.0),
-                    margin: EdgeInsets.only(right: 10.0),
+                    margin: EdgeInsets.only(right: 20.0),
                     decoration: BoxDecoration(
                       color: Color(0xffececf8),
                       borderRadius: BorderRadius.circular(10),
@@ -99,9 +99,9 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-            SizedBox(height: 10.0),
+            SizedBox(height: 20.0),
             Container(
-              height: 70,
+              height: 60,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
@@ -124,9 +124,9 @@ class _HomeState extends State<Home> {
                         padding: EdgeInsets.zero,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.79,
-                          mainAxisSpacing: 20.0,
-                          crossAxisSpacing: 15.0,
+                          childAspectRatio: 0.7,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
                         ),
                         itemCount: pizza.length,
                         itemBuilder: (context, index) {
@@ -147,9 +147,9 @@ class _HomeState extends State<Home> {
                         padding: EdgeInsets.zero,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.79,
-                          mainAxisSpacing: 20.0,
-                          crossAxisSpacing: 15.0,
+                          childAspectRatio: 0.7,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
                         ),
                         itemCount: burger.length,
                         itemBuilder: (context, index) {
@@ -172,6 +172,7 @@ class _HomeState extends State<Home> {
 
   Widget FoodTile(String name, String image, String price) {
     return Container(
+      margin: EdgeInsets.only(right: 20.0),
       padding: EdgeInsets.only(left: 10.0, top: 10.0),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black38),

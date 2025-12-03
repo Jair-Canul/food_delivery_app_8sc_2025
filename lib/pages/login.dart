@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app_8sc_2025/pages/bottomnav.dart';
 import 'package:food_delivery_app_8sc_2025/pages/signup.dart';
 import 'package:food_delivery_app_8sc_2025/service/widget_support.dart';
 
@@ -10,6 +13,46 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+  String email = "", password = "", name = "";
+  TextEditingController namecontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+  TextEditingController mailcontroller = TextEditingController();
+
+  bool _isObscure = false;
+
+  userLogin() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email!,
+        password: password!,
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => BottomNav()),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "No user Found for that Email",
+              style: TextStyle(fontSize: 18.0, color: Colors.black),
+            ),
+          ),
+        );
+      } else if (e.code == 'wrong-passwrod') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Wrong Password Provided by User",
+              style: TextStyle(fontSize: 18.0, color: Colors.black),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -100,6 +143,7 @@ class _LogInState extends State<LogIn> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
+                            controller: mailcontroller,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter Email",
@@ -120,10 +164,24 @@ class _LogInState extends State<LogIn> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
+                            obscureText: _isObscure,
+                            controller: passwordcontroller,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter Password",
                               prefixIcon: Icon(Icons.password_outlined),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _isObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscure = !_isObscure;
+                                  });
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -139,20 +197,32 @@ class _LogInState extends State<LogIn> {
                         ),
                         SizedBox(height: 40.0),
                         // Botón Sign Up
-                        Center(
-                          child: Container(
-                            width: 200,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Color(0xffef2b39),
-                              borderRadius: BorderRadius.circular(
-                                10,
-                              ), // Agregamos bordes redondeados
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Log In",
-                                style: AppWidget.whiteTextFeildStyle(),
+                        GestureDetector(
+                          onTap: () {
+                            if (mailcontroller.text != "" &&
+                                passwordcontroller.text != "") {
+                              setState(() {
+                                email = mailcontroller.text;
+                                password = passwordcontroller.text;
+                              });
+                              userLogin();
+                            }
+                          },
+                          child: Center(
+                            child: Container(
+                              width: 200,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: Color(0xffef2b39),
+                                borderRadius: BorderRadius.circular(
+                                  10,
+                                ), // Agregamos bordes redondeados
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Log In",
+                                  style: AppWidget.whiteTextFeildStyle(),
+                                ),
                               ),
                             ),
                           ),

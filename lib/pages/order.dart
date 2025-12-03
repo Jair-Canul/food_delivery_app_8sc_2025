@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app_8sc_2025/service/widget_support.dart';
 
 class Order extends StatefulWidget {
   const Order({super.key});
@@ -10,6 +11,134 @@ class Order extends StatefulWidget {
 class _OrderState extends State<Order> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("Order Page")));
+    return Scaffold(
+      body: Container(
+        margin: EdgeInsets.only(top: 40.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Orders", style: AppWidget.HeadlineTextFeildStyle()),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            Expanded(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Color(0xFFececf8),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 20.0),
+                    Container(
+                      margin: EdgeInsets.only(left: 20.0, right: 20.0),
+                      child: Material(
+                        elevation: 3.0,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              SizedBox(height: 5.0),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.location_on_outlined,
+                                    color: Color(0xffef2b39),
+                                  ),
+                                  SizedBox(width: 10.0),
+                                  Text(
+                                    "Near Market",
+                                    style: AppWidget.SimpleTextFeildStyle(),
+                                  ),
+                                ],
+                              ),
+                              Divider(),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    "images/burger1.png",
+                                    height: 120,
+                                    width: 120,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  SizedBox(width: 20.0),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Chesse Burguer",
+                                        style: AppWidget.boldTextFeildStyle(),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.format_list_numbered,
+                                            color: Color(0xffef2b39),
+                                          ),
+                                          SizedBox(width: 10.0),
+                                          Text(
+                                            "4",
+                                            style:
+                                                AppWidget.boldTextFeildStyle(),
+                                          ),
+                                          SizedBox(width: 30.0),
+                                          Icon(
+                                            Icons.monetization_on,
+                                            color: Color(0xffef2b39),
+                                          ),
+                                          SizedBox(width: 10.0),
+                                          Text(
+                                            "\$40",
+                                            style:
+                                                AppWidget.boldTextFeildStyle(),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 5.0,),
+                                      Text(
+                                        "Pending!",
+                                        style: TextStyle(
+                                          color: Color(0xffef2b39),
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

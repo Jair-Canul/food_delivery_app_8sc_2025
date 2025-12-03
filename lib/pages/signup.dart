@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app_8sc_2025/pages/bottomnav.dart';
 import 'package:food_delivery_app_8sc_2025/pages/login.dart';
+import 'package:food_delivery_app_8sc_2025/service/database.dart';
+import 'package:food_delivery_app_8sc_2025/service/shared_pref.dart';
 import 'package:food_delivery_app_8sc_2025/service/widget_support.dart';
 import 'package:random_string/random_string.dart';
 
@@ -17,6 +20,9 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passwordcontroller = new TextEditingController();
   TextEditingController mailcontroller = new TextEditingController();
 
+  ///Variable para controlar el ojo de la contraseña
+  bool _isObscure = true;
+
   registration() async {
     if (password != null &&
         namecontroller.text != "" &&
@@ -29,7 +35,28 @@ class _SignUpState extends State<SignUp> {
         Map<String, dynamic> UserInfoMap = {
           "Name": namecontroller.text,
           "Email": mailcontroller.text,
+          "id": Id,
         };
+
+        await SharedpreferenceHelper().saveUserEmail(email);
+        await SharedpreferenceHelper().saveUserName(namecontroller.text);
+        await SharedpreferenceHelper().saveUserId(Id);
+        await DatabaseMethods().addUserDetails(UserInfoMap, Id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Text(
+              "Registered Successfully",
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+          ),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BottomNav()),
+        );
+
+        ///Sirve para guardar en la base de datoos
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -145,6 +172,7 @@ class _SignUpState extends State<SignUp> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
+                            controller: namecontroller,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter Name",
@@ -162,6 +190,7 @@ class _SignUpState extends State<SignUp> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
+                            controller: mailcontroller,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter Email",
@@ -182,10 +211,24 @@ class _SignUpState extends State<SignUp> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
+                            obscureText: _isObscure,
+                            controller: passwordcontroller,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter Password",
                               prefixIcon: Icon(Icons.password_outlined),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _isObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscure = !_isObscure;
+                                  });
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -193,21 +236,35 @@ class _SignUpState extends State<SignUp> {
                         SizedBox(height: 30.0),
 
                         // Botón Sign Up
-                        Center(
-                          child: Container(
-                            width: 200,
-                            // AJUSTE FINAL: Reducimos la altura del botón (80 es mucho) y le damos borde
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Color(0xffef2b39),
-                              borderRadius: BorderRadius.circular(
-                                10,
-                              ), // Agregamos bordes redondeados
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Sign Up",
-                                style: AppWidget.whiteTextFeildStyle(),
+                        GestureDetector(
+                          onTap: () {
+                            if (namecontroller.text != "" &&
+                                mailcontroller.text != "" &&
+                                passwordcontroller.text != "") {
+                              setState(() {
+                                name = namecontroller.text;
+                                email = mailcontroller.text;
+                                password = passwordcontroller.text;
+                              });
+                              registration();
+                            }
+                          },
+                          child: Center(
+                            child: Container(
+                              width: 200,
+                              // AJUSTE FINAL: Reducimos la altura del botón (80 es mucho) y le damos borde
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Color(0xffef2b39),
+                                borderRadius: BorderRadius.circular(
+                                  10,
+                                ), // Agregamos bordes redondeados
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Sign Up",
+                                  style: AppWidget.whiteTextFeildStyle(),
+                                ),
                               ),
                             ),
                           ),
