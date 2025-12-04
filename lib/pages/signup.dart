@@ -35,7 +35,8 @@ class _SignUpState extends State<SignUp> {
         Map<String, dynamic> UserInfoMap = {
           "Name": namecontroller.text,
           "Email": mailcontroller.text,
-          "id": Id,
+          "Id": Id,
+          "Wallet": "0",
         };
 
         await SharedpreferenceHelper().saveUserEmail(email);

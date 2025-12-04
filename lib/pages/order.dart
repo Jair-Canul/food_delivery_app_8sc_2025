@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app_8sc_2025/service/database.dart';
+import 'package:food_delivery_app_8sc_2025/service/shared_pref.dart';
 import 'package:food_delivery_app_8sc_2025/service/widget_support.dart';
 
 class Order extends StatefulWidget {
@@ -9,6 +12,136 @@ class Order extends StatefulWidget {
 }
 
 class _OrderState extends State<Order> {
+  String? id;
+
+  getthesahredpref() async {
+    id = await SharedpreferenceHelper().getUserId();
+    setState(() {});
+  }
+
+  getontheload() async {
+    await getthesahredpref();
+    orderStream = await DatabaseMethods().getUserOrders(id!);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getontheload();
+  }
+
+  Stream? orderStream;
+
+  Widget allOrders() {
+    return StreamBuilder(
+      stream: orderStream,
+      builder: (context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot ds = snapshot.data.docs[index];
+                  return Container(
+                    margin: EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: Material(
+                      elevation: 3.0,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 5.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.location_on_outlined,
+                                  color: Color(0xffef2b39),
+                                ),
+                                SizedBox(width: 10.0),
+                                Text(
+                                  ds["Address"],
+                                  style: AppWidget.SimpleTextFeildStyle(),
+                                ),
+                              ],
+                            ),
+                            Divider(),
+                            Row(
+                              children: [
+                                Image.asset(
+                                  ds["FoodImage"],
+                                  height: 120,
+                                  width: 120,
+                                  fit: BoxFit.cover,
+                                ),
+                                SizedBox(width: 20.0),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      ds["FoodName"],
+                                      style: AppWidget.boldTextFeildStyle(),
+                                    ),
+                                    SizedBox(height: 5.0),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.format_list_numbered,
+                                          color: Color(0xffef2b39),
+                                        ),
+                                        SizedBox(width: 10.0),
+                                        Text(
+                                          ds["Quantity"],
+                                          style: AppWidget.boldTextFeildStyle(),
+                                        ),
+                                        SizedBox(width: 30.0),
+                                        Icon(
+                                          Icons.monetization_on,
+                                          color: Color(0xffef2b39),
+                                        ),
+                                        SizedBox(width: 10.0),
+                                        Text(
+                                          "\$" + ds["Total"],
+                                          style: AppWidget.boldTextFeildStyle(),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 5.0),
+                                    Text(
+                                      ds["Status"] + "!",
+                                      style: TextStyle(
+                                        color: Color(0xffef2b39),
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )
+            : Container();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,100 +170,8 @@ class _OrderState extends State<Order> {
                   children: [
                     SizedBox(height: 20.0),
                     Container(
-                      margin: EdgeInsets.only(left: 20.0, right: 20.0),
-                      child: Material(
-                        elevation: 3.0,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(height: 5.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.location_on_outlined,
-                                    color: Color(0xffef2b39),
-                                  ),
-                                  SizedBox(width: 10.0),
-                                  Text(
-                                    "Near Market",
-                                    style: AppWidget.SimpleTextFeildStyle(),
-                                  ),
-                                ],
-                              ),
-                              Divider(),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    "images/burger1.png",
-                                    height: 120,
-                                    width: 120,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  SizedBox(width: 20.0),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Chesse Burguer",
-                                        style: AppWidget.boldTextFeildStyle(),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.format_list_numbered,
-                                            color: Color(0xffef2b39),
-                                          ),
-                                          SizedBox(width: 10.0),
-                                          Text(
-                                            "4",
-                                            style:
-                                                AppWidget.boldTextFeildStyle(),
-                                          ),
-                                          SizedBox(width: 30.0),
-                                          Icon(
-                                            Icons.monetization_on,
-                                            color: Color(0xffef2b39),
-                                          ),
-                                          SizedBox(width: 10.0),
-                                          Text(
-                                            "\$40",
-                                            style:
-                                                AppWidget.boldTextFeildStyle(),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 5.0,),
-                                      Text(
-                                        "Pending!",
-                                        style: TextStyle(
-                                          color: Color(0xffef2b39),
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      height: MediaQuery.of(context).size.height / 1.5,
+                      child: allOrders(),
                     ),
                   ],
                 ),
@@ -142,3 +183,4 @@ class _OrderState extends State<Order> {
     );
   }
 }
+////Termina en 03:58:02

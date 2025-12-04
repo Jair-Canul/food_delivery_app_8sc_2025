@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:food_delivery_app_8sc_2025/service/constant.dart';
@@ -24,7 +25,7 @@ class _DetailPageState extends State<DetailPage> {
 
   // 1. DECLARAMOS LA VARIABLE GLOBAL AQUÍ
   Map<String, dynamic>? paymentIntent;
-  String? name, id, email, address;
+  String? name, id, email, address, wallet;
 
   getthesharedpref() async {
     name = await SharedpreferenceHelper().getUserName();
@@ -37,10 +38,20 @@ class _DetailPageState extends State<DetailPage> {
     setState(() {});
   }
 
+  getUserWallet() async {
+    await getthesharedpref();
+    QuerySnapshot querySnapshot = await DatabaseMethods().getUserWalletbyemail(
+      email!,
+    );
+    wallet = "${querySnapshot.docs[0]["Wallet"]}";
+    print(wallet);
+    setState(() {});
+  }
+
   @override
   void initState() {
     totalprice = int.parse(widget.price);
-    getthesharedpref();
+    getUserWallet();
     super.initState();
   }
 
@@ -172,11 +183,64 @@ class _DetailPageState extends State<DetailPage> {
 
                   // 3. CONECTAMOS EL BOTÓN CON LA FUNCIÓN makePayment
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       if (address == null) {
                         openBox();
+                      } else if (int.parse(wallet!) > totalprice) {
+                        int updatewallet = int.parse(wallet!) - totalprice;
+                        await DatabaseMethods().updateUserWallet(
+                          updatewallet.toString(),
+                          id!,
+                        );
+                        String orderId = randomAlphaNumeric(10);
+                        Map<String, dynamic> userOrderMap = {
+                          "Name": name,
+                          "id": id,
+                          "Quantity": quantity.toString(),
+                          "Total": totalprice.toString(),
+                          "Email": email,
+                          "FoodName": widget.name,
+                          "FoodImage": widget.image,
+                          "OrderId": orderId,
+                          "Status": "Pendind",
+                          "Address": address ?? addresscontroller.text,
+                        };
+                        await DatabaseMethods().addUserOrderDetails(
+                          userOrderMap,
+                          id!,
+                          orderId,
+                        );
+
+                        await DatabaseMethods().addAdminOrderDetails(
+                          userOrderMap,
+                          orderId,
+                        );
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.green,
+                            content: Text(
+                              "Order Placed Successfully",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
                       } else {
-                        makePayment(totalprice.toString());
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text(
+                              "Add some money to your wallet",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
                       }
                     },
                     child: Material(
@@ -283,6 +347,14 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               ),
             );
+
+            // Cerrar automáticamente después de 5 segundos
+            Future.delayed(Duration(seconds: 5), () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            });
+
             paymentIntent = null;
           })
           .onError((error, stackTrace) {
@@ -379,6 +451,7 @@ class _DetailPageState extends State<DetailPage> {
 
               GestureDetector(
                 onTap: () async {
+                  address = addresscontroller.text;
                   await SharedpreferenceHelper().saveUserAddress(
                     addresscontroller.text,
                   );

@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:food_delivery_app_8sc_2025/Admin/admin_login.dart';
+import 'package:food_delivery_app_8sc_2025/Admin/all_order.dart';
 import 'package:food_delivery_app_8sc_2025/pages/bottomnav.dart';
 import 'package:food_delivery_app_8sc_2025/pages/detail_page.dart';
 import 'package:food_delivery_app_8sc_2025/pages/home.dart';
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
       ),
       // Aquí defines cuál es tu primera pantalla
       // home: Onboarding(),
-      home: SignUp(),
+      home: AllOrders(),
     );
   }
 }
