@@ -13,78 +13,64 @@ class AdminLogIn extends StatefulWidget {
 class _AdminLogInState extends State<AdminLogIn> {
   TextEditingController usernamecontroller = new TextEditingController();
   TextEditingController passwordcontroller = new TextEditingController();
-  bool _isObscure = true;
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: 50.0),
-          child: Stack(
-            children: [
-              // ----------------------------------------------------
-              // CONTENEDOR AMARILLO SUPERIOR (Header)
-              // ----------------------------------------------------
-              Container(
-                padding: EdgeInsets.only(
-                  // Esto asegura que el contenido baje si hay "Notch" o Isla dinámica
-                  top: MediaQuery.of(context).padding.top + 20,
-                ),
-                height: MediaQuery.of(context).size.height / 2.5,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Color(0xffffefbf),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(40),
-                    bottomRight: Radius.circular(40),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      "images/pan.png",
-                      height: 120,
-                      fit: BoxFit.fill,
-                      width: 180,
-                    ),
-                    Image.asset(
-                      "images/logo.png",
-                      width: 150,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    ),
-                  ],
+        child: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height / 2.5,
+              padding: EdgeInsets.only(top: 30.0),
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: Color(0xffffefbf),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40),
                 ),
               ),
-
-              // ----------------------------------------------------
-              // TARJETA BLANCA (Formulario)
-              // ----------------------------------------------------
-              Container(
-                margin: EdgeInsets.only(
-                  // CAMBIO CLAVE AQUÍ:
-                  // Cambiamos 0.25 por 0.32. Esto baja la tarjeta blanca
-                  // para que no tape el logo de "FoodGo".
-                  top: MediaQuery.of(context).size.height * 0.32,
-                  left: 20.0,
-                  right: 20.0,
-                ),
-                child: Material(
-                  elevation: 3.0,
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+              child: Column(
+                children: [
+                  Image.asset(
+                    "images/pan.png",
+                    height: 180,
+                    fit: BoxFit.fill,
+                    width: 240,
+                  ),
+                  Image.asset(
+                    "images/logo.png",
+                    width: 150,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height / 3.2,
+                left: 20.0,
+                right: 20.0,
+              ),
+              child: Material(
+                elevation: 3.0,
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  height: MediaQuery.of(context).size.height / 2.3,
+                  child: SingleChildScrollView(
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20),
+                        SizedBox(height: 20.0),
                         Center(
                           child: Text(
                             "Admin",
@@ -92,8 +78,6 @@ class _AdminLogInState extends State<AdminLogIn> {
                           ),
                         ),
                         SizedBox(height: 30.0),
-
-                        // --- Username ---
                         Text(
                           "Username",
                           style: AppWidget.SignUpTextFeildStyle(),
@@ -115,8 +99,6 @@ class _AdminLogInState extends State<AdminLogIn> {
                         ),
 
                         SizedBox(height: 20.0),
-
-                        // --- Password ---
                         Text(
                           "Password",
                           style: AppWidget.SignUpTextFeildStyle(),
@@ -128,31 +110,28 @@ class _AdminLogInState extends State<AdminLogIn> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
-                            obscureText: _isObscure,
+                            obscureText: !_isPasswordVisible,
                             controller: passwordcontroller,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter Password",
                               prefixIcon: Icon(Icons.password_outlined),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isObscure
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: () {
+                              suffixIcon: GestureDetector(
+                                onTap: () {
                                   setState(() {
-                                    _isObscure = !_isObscure;
+                                    _isPasswordVisible = !_isPasswordVisible;
                                   });
                                 },
+                                child: Icon(
+                                  _isPasswordVisible
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
                               ),
                             ),
                           ),
                         ),
-
                         SizedBox(height: 30.0),
-
-                        // --- Botón LogIn ---
                         GestureDetector(
                           onTap: () {
                             loginAdmin();
@@ -160,15 +139,15 @@ class _AdminLogInState extends State<AdminLogIn> {
                           child: Center(
                             child: Container(
                               width: 200,
-                              height: 50,
+                              height: 60,
                               decoration: BoxDecoration(
                                 color: Color(0xffef2b39),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(30),
                               ),
                               child: Center(
                                 child: Text(
                                   "LogIn",
-                                  style: AppWidget.whiteTextFeildStyle(),
+                                  style: AppWidget.boldwhiteTextFeildStyle(),
                                 ),
                               ),
                             ),
@@ -180,8 +159,8 @@ class _AdminLogInState extends State<AdminLogIn> {
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -195,7 +174,7 @@ class _AdminLogInState extends State<AdminLogIn> {
             SnackBar(
               backgroundColor: Colors.red,
               content: Text(
-                "Your Username is not Correct",
+                "Your username is not correct",
                 style: TextStyle(fontSize: 18.0),
               ),
             ),
@@ -205,11 +184,11 @@ class _AdminLogInState extends State<AdminLogIn> {
             SnackBar(
               backgroundColor: Colors.red,
               content: Text(
-                "Your password is not Correct",
+                "Your password is not correct",
                 style: TextStyle(fontSize: 18.0),
               ),
             ),
-          ); // Aquí faltaba código 04:43:46
+          );
         } else {
           Navigator.push(
             context,

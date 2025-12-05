@@ -38,6 +38,7 @@ dependencies:
   shared_preferences:
   http:
   flutter_stripe: ^12.1.1
+  intl: ^0.18.1
  
 
 

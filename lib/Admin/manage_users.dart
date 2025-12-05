@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app_8sc_2025/service/database.dart';
 import 'package:food_delivery_app_8sc_2025/service/widget_support.dart';
 
-class AllOrders extends StatefulWidget {
-  const AllOrders({super.key});
+class ManageUsers extends StatefulWidget {
+  const ManageUsers({super.key});
 
   @override
-  State<AllOrders> createState() => _AllOrdersState();
+  State<ManageUsers> createState() => _ManageUsersState();
 }
 
-class _AllOrdersState extends State<AllOrders> {
+class _ManageUsersState extends State<ManageUsers> {
   getontheload() async {
-    orderStream = await DatabaseMethods().getAdminOrders();
+    userStream = await DatabaseMethods().getAllUsers();
     setState(() {});
   }
 
@@ -22,11 +22,11 @@ class _AllOrdersState extends State<AllOrders> {
     getontheload();
   }
 
-  Stream? orderStream;
+  Stream? userStream;
 
-  Widget allOrders() {
+  Widget allUsers() {
     return StreamBuilder(
-      stream: orderStream,
+      stream: userStream,
       builder: (context, AsyncSnapshot snapshot) {
         return snapshot.hasData
             ? ListView.builder(
@@ -42,78 +42,31 @@ class _AllOrdersState extends State<AllOrders> {
                     ),
                     child: Material(
                       elevation: 3.0,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
-                      ),
+                      borderRadius: BorderRadius.circular(30),
                       child: Container(
+                        padding: EdgeInsets.all(10),
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
+                          borderRadius: BorderRadius.circular(30),
                         ),
                         child: Column(
                           children: [
-                            SizedBox(height: 5.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  color: Color(0xffef2b39),
-                                ),
-                                SizedBox(width: 10.0),
-                                Text(
-                                  ds["Address"],
-                                  style: AppWidget.SimpleTextFeildStyle(),
-                                ),
-                              ],
-                            ),
-                            Divider(),
                             Row(
                               children: [
-                                Image.asset(
-                                  ds["FoodImage"],
-                                  height: 120,
-                                  width: 120,
-                                  fit: BoxFit.cover,
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(60),
+                                  child: Image.asset(
+                                    "images/boy.jpg",
+                                    height: 90,
+                                    width: 90,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                                 SizedBox(width: 20.0),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      ds["FoodName"],
-                                      style: AppWidget.boldTextFeildStyle(),
-                                    ),
-                                    SizedBox(height: 5.0),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.format_list_numbered,
-                                          color: Color(0xffef2b39),
-                                        ),
-                                        SizedBox(width: 10.0),
-                                        Text(
-                                          ds["Quantity"],
-                                          style: AppWidget.boldTextFeildStyle(),
-                                        ),
-                                        SizedBox(width: 30.0),
-                                        Icon(
-                                          Icons.monetization_on,
-                                          color: Color(0xffef2b39),
-                                        ),
-                                        SizedBox(width: 10.0),
-                                        Text(
-                                          "\$" + ds["Total"],
-                                          style: AppWidget.boldTextFeildStyle(),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 5.0),
                                     Row(
                                       children: [
                                         Icon(
@@ -123,12 +76,10 @@ class _AllOrdersState extends State<AllOrders> {
                                         SizedBox(width: 10.0),
                                         Text(
                                           ds["Name"],
-                                          style:
-                                              AppWidget.SimpleTextFeildStyle(),
+                                          style: AppWidget.boldTextFeildStyle(),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 5.0),
                                     Row(
                                       children: [
                                         Icon(
@@ -143,44 +94,31 @@ class _AllOrdersState extends State<AllOrders> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 5.0),
-                                    Text(
-                                      ds["Status"] + "!",
-                                      style: TextStyle(
-                                        color: Color(0xffef2b39),
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(height: 5.0),
+                                    SizedBox(height: 10.0),
                                     GestureDetector(
                                       onTap: () async {
-                                        await DatabaseMethods()
-                                            .updateAdminOrder(ds.id);
-                                        await DatabaseMethods().updateUserOrder(
+                                        await DatabaseMethods().deleteUser(
                                           ds["Id"],
-                                          ds.id,
                                         );
                                       },
                                       child: Container(
-                                        width: 100,
-                                        height: 50,
+                                        height: 30,
                                         decoration: BoxDecoration(
                                           color: Colors.black,
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
                                         ),
+                                        width: 100,
                                         child: Center(
                                           child: Text(
-                                            "Delivered",
+                                            "Remove",
                                             style:
                                                 AppWidget.whiteTextFeildStyle(),
                                           ),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(height: 10.0),
                                   ],
                                 ),
                               ],
@@ -225,7 +163,10 @@ class _AllOrdersState extends State<AllOrders> {
                     ),
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width / 6),
-                  Text("All Orders", style: AppWidget.HeadlineTextFeildStyle()),
+                  Text(
+                    "Current Users",
+                    style: AppWidget.HeadlineTextFeildStyle(),
+                  ),
                 ],
               ),
             ),
@@ -244,8 +185,8 @@ class _AllOrdersState extends State<AllOrders> {
                   children: [
                     SizedBox(height: 20.0),
                     Container(
-                      height: MediaQuery.of(context).size.height / 1.5,
-                      child: allOrders(),
+                      height: MediaQuery.of(context).size.height / 2,
+                      child: allUsers(),
                     ),
                   ],
                 ),
@@ -257,3 +198,5 @@ class _AllOrdersState extends State<AllOrders> {
     );
   }
 }
+
+////5:19:36

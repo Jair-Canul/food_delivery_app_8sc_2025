@@ -1,10 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app_8sc_2025/model/burger_model.dart';
 import 'package:food_delivery_app_8sc_2025/model/category_model.dart';
+import 'package:food_delivery_app_8sc_2025/model/chinese_model.dart';
+import 'package:food_delivery_app_8sc_2025/model/mexican_model.dart';
 import 'package:food_delivery_app_8sc_2025/model/pizza_model.dart';
 import 'package:food_delivery_app_8sc_2025/pages/detail_page.dart';
 import 'package:food_delivery_app_8sc_2025/service/burger_data.dart';
 import 'package:food_delivery_app_8sc_2025/service/category_data.dart';
+import 'package:food_delivery_app_8sc_2025/service/chinese_data.dart';
+import 'package:food_delivery_app_8sc_2025/service/database.dart';
+import 'package:food_delivery_app_8sc_2025/service/mexican_data.dart';
 import 'package:food_delivery_app_8sc_2025/service/pizza_data.dart';
 import 'package:food_delivery_app_8sc_2025/service/widget_support.dart';
 
@@ -19,14 +25,55 @@ class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
   List<PizzaModel> pizza = [];
   List<BurgerModel> burger = [];
+  List<ChineseModel> chinese = [];
+  List<MexicanModel> mexican = [];
   String track = "0";
+  bool search = false;
+  TextEditingController searchcontroller = new TextEditingController();
 
   @override
   void initState() {
     categories = getCategories();
     pizza = getPizza();
     burger = getBurger();
+
+    chinese = getChinese();
+    mexican = getMexican();
     super.initState();
+  }
+
+  var queryResultSet = [];
+  var tempSearchStore = [];
+
+  initiateSearch(value) {
+    if (value.length == 0) {
+      setState(() {
+        queryResultSet = [];
+        tempSearchStore = [];
+      });
+    }
+    setState(() {
+      search = true;
+    });
+
+    var CapitalizedValue =
+        value.substring(0, 1).toUpperCase() + value.substring(1);
+    if (queryResultSet.isEmpty && value.length == 1) {
+      DatabaseMethods().search(value).then((QuerySnapshot docs) {
+        for (int i = 0; i < docs.docs.length; ++i) {
+          queryResultSet.add(docs.docs[i].data());
+        }
+      });
+    } else {
+      tempSearchStore = [];
+      queryResultSet.forEach((element) {
+        if (element['Name'].startsWith(CapitalizedValue)) {
+          setState(() {
+            tempSearchStore.add(element);
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -49,7 +96,7 @@ class _HomeState extends State<Home> {
                       fit: BoxFit.contain,
                     ),
                     Text(
-                      "Order your favorite food!",
+                      "Order your favourite food!",
                       style: AppWidget.SimpleTextFeildStyle(),
                     ),
                   ],
@@ -77,13 +124,17 @@ class _HomeState extends State<Home> {
                     padding: EdgeInsets.only(left: 10.0),
                     margin: EdgeInsets.only(right: 20.0),
                     decoration: BoxDecoration(
-                      color: Color(0xffececf8),
+                      color: Color(0xFFececf8),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
+                      controller: searchcontroller,
+                      onChanged: (value) {
+                        initiateSearch(value.toUpperCase());
+                      },
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Search fav food item...",
+                        hintText: "Search food item...",
                       ),
                     ),
                   ),
@@ -95,13 +146,28 @@ class _HomeState extends State<Home> {
                     color: Color(0xffef2b39),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(Icons.search, color: Colors.white, size: 30.0),
+                  child: search
+                      ? GestureDetector(
+                          onTap: () {
+                            searchcontroller.text = "";
+                            var queryResultSet = [];
+                            var tempSearchStore = [];
+                            search = false;
+                            setState(() {});
+                          },
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 30.0,
+                          ),
+                        )
+                      : Icon(Icons.search, color: Colors.white, size: 30.0),
                 ),
               ],
             ),
             SizedBox(height: 20.0),
             Container(
-              height: 60,
+              height: 70,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
@@ -116,7 +182,16 @@ class _HomeState extends State<Home> {
               ),
             ),
             SizedBox(height: 10.0),
-            track == "0"
+            search
+                ? ListView(
+                    padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                    primary: false,
+                    shrinkWrap: true,
+                    children: tempSearchStore.map((element) {
+                      return buildResultCard(element);
+                    }).toList(),
+                  )
+                : track == "0"
                 ? Expanded(
                     child: Container(
                       margin: EdgeInsets.only(right: 10.0),
@@ -124,9 +199,9 @@ class _HomeState extends State<Home> {
                         padding: EdgeInsets.zero,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.7,
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 10.0,
+                          childAspectRatio: 0.69,
+                          mainAxisSpacing: 20.0,
+                          crossAxisSpacing: 15.0,
                         ),
                         itemCount: pizza.length,
                         itemBuilder: (context, index) {
@@ -147,9 +222,9 @@ class _HomeState extends State<Home> {
                         padding: EdgeInsets.zero,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.7,
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 10.0,
+                          childAspectRatio: 0.69,
+                          mainAxisSpacing: 20.0,
+                          crossAxisSpacing: 15.0,
                         ),
                         itemCount: burger.length,
                         itemBuilder: (context, index) {
@@ -162,9 +237,133 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   )
+                : track == "2"
+                ? Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(right: 10.0),
+                      child: GridView.builder(
+                        padding: EdgeInsets.zero,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.69,
+                          mainAxisSpacing: 20.0,
+                          crossAxisSpacing: 15.0,
+                        ),
+                        itemCount: chinese.length, // Usamos la lista de China
+                        itemBuilder: (context, index) {
+                          return FoodTile(
+                            chinese[index].name!,
+                            chinese[index].image!,
+                            chinese[index].price!,
+                          );
+                        },
+                      ),
+                    ),
+                  )
+                : track == "3"
+                ? Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(right: 10.0),
+                      child: GridView.builder(
+                        padding: EdgeInsets.zero,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.69,
+                          mainAxisSpacing: 20.0,
+                          crossAxisSpacing: 15.0,
+                        ),
+                        itemCount: mexican.length, // Usamos la lista de Mexican
+                        itemBuilder: (context, index) {
+                          return FoodTile(
+                            mexican[index].name!,
+                            mexican[index].image!,
+                            mexican[index].price!,
+                          );
+                        },
+                      ),
+                    ),
+                  )
                 : Container(),
-            SizedBox(height: 10.0),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildResultCard(data) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailPage(
+              image: data["Image"],
+              name: data["Name"],
+              price: data["Price"],
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 20.0),
+        child: Material(
+          elevation: 3.0,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: EdgeInsets.only(left: 20.0),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            height: 100,
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    data["Image"],
+                    height: 70,
+                    width: 70,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(width: 20.0),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data["Name"],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22.0,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                    Text(
+                      "\$" + data["Price"],
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                Spacer(),
+                Container(
+                  margin: EdgeInsets.only(right: 20.0),
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Color(0xffef2b39),
+                    borderRadius: BorderRadius.circular(60),
+                  ),
+                  child: Icon(Icons.add, color: Colors.white, size: 30.0),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -172,7 +371,6 @@ class _HomeState extends State<Home> {
 
   Widget FoodTile(String name, String image, String price) {
     return Container(
-      margin: EdgeInsets.only(right: 20.0),
       padding: EdgeInsets.only(left: 10.0, top: 10.0),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black38),
@@ -233,6 +431,7 @@ class _HomeState extends State<Home> {
     return GestureDetector(
       onTap: () {
         track = categoryindex.toString();
+
         setState(() {});
       },
       child: track == categoryindex
@@ -263,7 +462,7 @@ class _HomeState extends State<Home> {
               ),
             )
           : Container(
-              padding: EdgeInsets.only(left: 10.0, right: 20),
+              padding: EdgeInsets.only(left: 20.0, right: 20.0),
               margin: EdgeInsets.only(right: 20.0, bottom: 10.0),
               decoration: BoxDecoration(
                 color: Color(0xFFececf8),
@@ -280,5 +479,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-///Me quedé en el minuto 1:37:15

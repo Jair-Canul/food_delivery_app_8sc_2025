@@ -21,11 +21,9 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   TextEditingController addresscontroller = new TextEditingController();
-  int quantity = 1, totalprice = 0;
-
-  // 1. DECLARAMOS LA VARIABLE GLOBAL AQUÍ
   Map<String, dynamic>? paymentIntent;
   String? name, id, email, address, wallet;
+  int quantity = 1, totalprice = 0;
 
   getthesharedpref() async {
     name = await SharedpreferenceHelper().getUserName();
@@ -44,6 +42,7 @@ class _DetailPageState extends State<DetailPage> {
       email!,
     );
     wallet = "${querySnapshot.docs[0]["Wallet"]}";
+
     print(wallet);
     setState(() {});
   }
@@ -96,7 +95,7 @@ class _DetailPageState extends State<DetailPage> {
               Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: Text(
-                  "We've established that most cheeses will melt when baked atop pizza. But which will not only melt but stretch info those gooey, messy strands that can make pizza eating such a delightfully challenging endeavor?",
+                  "We’ve established that most cheeses will melt when baked atop pizza. But which will not only melt but stretch into those gooey, messy strands that can make pizza eating such a delightfully challenging endeavor?",
                   style: AppWidget.SimpleTextFeildStyle(),
                 ),
               ),
@@ -120,7 +119,7 @@ class _DetailPageState extends State<DetailPage> {
                           color: Color(0xffef2b39),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Icon(Icons.add, color: Colors.white, size: 30),
+                        child: Icon(Icons.add, color: Colors.white, size: 30.0),
                       ),
                     ),
                   ),
@@ -150,11 +149,12 @@ class _DetailPageState extends State<DetailPage> {
                         child: Icon(
                           Icons.remove,
                           color: Colors.white,
-                          size: 30,
+                          size: 30.0,
                         ),
                       ),
                     ),
                   ),
+                  SizedBox(width: 20.0),
                 ],
               ),
               SizedBox(height: 40.0),
@@ -180,29 +180,27 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ),
                   SizedBox(width: 30.0),
-
-                  // 3. CONECTAMOS EL BOTÓN CON LA FUNCIÓN makePayment
                   GestureDetector(
                     onTap: () async {
                       if (address == null) {
                         openBox();
                       } else if (int.parse(wallet!) > totalprice) {
-                        int updatewallet = int.parse(wallet!) - totalprice;
+                        int updatedwallet = int.parse(wallet!) - totalprice;
                         await DatabaseMethods().updateUserWallet(
-                          updatewallet.toString(),
+                          updatedwallet.toString(),
                           id!,
                         );
                         String orderId = randomAlphaNumeric(10);
                         Map<String, dynamic> userOrderMap = {
                           "Name": name,
-                          "id": id,
+                          "Id": id,
                           "Quantity": quantity.toString(),
                           "Total": totalprice.toString(),
                           "Email": email,
                           "FoodName": widget.name,
                           "FoodImage": widget.image,
                           "OrderId": orderId,
-                          "Status": "Pendind",
+                          "Status": "Pending",
                           "Address": address ?? addresscontroller.text,
                         };
                         await DatabaseMethods().addUserOrderDetails(
@@ -210,19 +208,17 @@ class _DetailPageState extends State<DetailPage> {
                           id!,
                           orderId,
                         );
-
                         await DatabaseMethods().addAdminOrderDetails(
                           userOrderMap,
                           orderId,
                         );
-
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             backgroundColor: Colors.green,
                             content: Text(
-                              "Order Placed Successfully",
+                              "Order Placed Successfully!",
                               style: TextStyle(
-                                fontSize: 16.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -233,9 +229,9 @@ class _DetailPageState extends State<DetailPage> {
                           SnackBar(
                             backgroundColor: Colors.red,
                             content: Text(
-                              "Add some money to your wallet",
+                              "Add some money to your Wallet",
                               style: TextStyle(
-                                fontSize: 16.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -264,7 +260,6 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20.0),
             ],
           ),
         ),
@@ -272,17 +267,13 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  // -----------------------------------------------------------------------
-  // TODAS LAS FUNCIONES DE STRIPE VAN AQUÍ ADENTRO (Antes de la última llave)
-  // -----------------------------------------------------------------------
-
   Future<void> makePayment(String amount) async {
     try {
       paymentIntent = await createPaymentIntent(amount, 'USD');
       await Stripe.instance
           .initPaymentSheet(
             paymentSheetParameters: SetupPaymentSheetParameters(
-              paymentIntentClientSecret: paymentIntent!['client_secret'],
+              paymentIntentClientSecret: paymentIntent?['client_secret'],
               style: ThemeMode.dark,
               merchantDisplayName: 'Adnan',
             ),
@@ -303,14 +294,14 @@ class _DetailPageState extends State<DetailPage> {
             String orderId = randomAlphaNumeric(10);
             Map<String, dynamic> userOrderMap = {
               "Name": name,
-              "id": id,
+              "Id": id,
               "Quantity": quantity.toString(),
               "Total": totalprice.toString(),
               "Email": email,
               "FoodName": widget.name,
               "FoodImage": widget.image,
               "OrderId": orderId,
-              "Status": "Pendind",
+              "Status": "Pending",
               "Address": address ?? addresscontroller.text,
             };
             await DatabaseMethods().addUserOrderDetails(
@@ -318,21 +309,19 @@ class _DetailPageState extends State<DetailPage> {
               id!,
               orderId,
             );
-
             await DatabaseMethods().addAdminOrderDetails(userOrderMap, orderId);
-
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.green,
                 content: Text(
-                  "Order Placed Successfully",
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  "Order Placed Successfully!",
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
               ),
             );
-
+            // ignore: use_build_context_synchronously
             showDialog(
-              context: context, // Ahora sí reconoce el context
+              context: context,
               builder: (_) => AlertDialog(
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -347,21 +336,13 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               ),
             );
-
-            // Cerrar automáticamente después de 5 segundos
-            Future.delayed(Duration(seconds: 5), () {
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).pop();
-              }
-            });
-
             paymentIntent = null;
           })
           .onError((error, stackTrace) {
             print("Error is :---> $error $stackTrace");
           });
     } on StripeException catch (e) {
-      print("Error is:--->$e");
+      print("Error is:---> $e");
       showDialog(
         context: context,
         builder: (_) => AlertDialog(content: Text("Cancelled")),
@@ -382,8 +363,7 @@ class _DetailPageState extends State<DetailPage> {
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         headers: {
-          'Authorization':
-              'Bearer $secretKey', // Usa la variable que declaramos arriba
+          'Authorization': 'Bearer $secretkey',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: body,
@@ -394,9 +374,9 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
-  // 4. AGREGUÉ ESTA FUNCIÓN QUE FALTABA
   calculateAmount(String amount) {
-    final calculatedAmount = (int.parse(amount)) * 100;
+    final calculatedAmount = (int.parse(amount) * 100);
+
     return calculatedAmount.toString();
   }
 
@@ -416,16 +396,14 @@ class _DetailPageState extends State<DetailPage> {
                     },
                     child: Icon(Icons.cancel),
                   ),
-                  SizedBox(
-                    width: 30.0,
-                  ), // Ajusté un poco el espacio para centrarlo mejor
+                  SizedBox(width: 30.0),
                   Text(
                     "Add the Address",
                     style: TextStyle(
                       color: Color(0xff008080),
                       fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                    ), // Un poco más grande
+                      fontSize: 18.0,
+                    ),
                   ),
                 ],
               ),
@@ -435,8 +413,7 @@ class _DetailPageState extends State<DetailPage> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 decoration: BoxDecoration(
-                  // AQUÍ CORREGÍ EL GROSOR: de 10.0 a 1.0
-                  border: Border.all(color: Colors.black38, width: 1.0),
+                  border: Border.all(color: Colors.black38, width: 2.0),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -448,21 +425,20 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               ),
               SizedBox(height: 20.0),
-
               GestureDetector(
                 onTap: () async {
                   address = addresscontroller.text;
                   await SharedpreferenceHelper().saveUserAddress(
                     addresscontroller.text,
                   );
-                  Navigator.pop(context); // Cierra el diálogo
+                  Navigator.pop(context);
                 },
                 child: Center(
                   child: Container(
-                    width: 100, // Un ancho fijo para que se vea como botón
+                    width: 100,
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      color: Color(0xff008080), // El color verde azulado
+                      color: Color(0xFF008080),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
@@ -471,6 +447,7 @@ class _DetailPageState extends State<DetailPage> {
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
                         ),
                       ),
                     ),
@@ -483,4 +460,4 @@ class _DetailPageState extends State<DetailPage> {
       ),
     ),
   );
-} // <--- AQUÍ TERMINA LA CLASE _DetailPageState
+}

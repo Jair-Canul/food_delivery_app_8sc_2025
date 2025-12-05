@@ -35,8 +35,6 @@ class SharedpreferenceHelper {
     return prefs.setString(userImageKey, getUserImage);
   }
 
-  // --- 2. Funciones para OBTENER datos ---
-
   Future<String?> getUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(userIdKey);
@@ -47,9 +45,9 @@ class SharedpreferenceHelper {
     return prefs.getString(userNameKey);
   }
 
-  Future<String?> getUserEmail() async {
+  Future<String?> getUserAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(userEmailKey);
+    return prefs.getString(userAddressKey);
   }
 
   Future<String?> getUserImage() async {
@@ -57,8 +55,8 @@ class SharedpreferenceHelper {
     return prefs.getString(userImageKey);
   }
 
-  Future<String?> getUserAddress() async {
+  Future<String?> getUserEmail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(userAddressKey);
+    return prefs.getString(userEmailKey);
   }
 }

@@ -39,11 +39,16 @@ class _OrderState extends State<Order> {
       builder: (context, AsyncSnapshot snapshot) {
         return snapshot.hasData
             ? ListView.builder(
+                padding: EdgeInsets.zero,
                 itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
                   DocumentSnapshot ds = snapshot.data.docs[index];
                   return Container(
-                    margin: EdgeInsets.only(left: 20.0, right: 20.0),
+                    margin: EdgeInsets.only(
+                      left: 20.0,
+                      right: 20.0,
+                      bottom: 20.0,
+                    ),
                     child: Material(
                       elevation: 3.0,
                       borderRadius: BorderRadius.only(
@@ -183,4 +188,3 @@ class _OrderState extends State<Order> {
     );
   }
 }
-////Termina en 03:58:02

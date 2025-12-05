@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart';
 
 class DatabaseMethods {
   Future addUserDetails(Map<String, dynamic> userInfoMap, String id) async {
@@ -47,8 +48,70 @@ class DatabaseMethods {
   }
 
   Future updateUserWallet(String amount, String id) async {
-    return await FirebaseFirestore.instance.collection("users").doc(id).update({
+    return await FirebaseFirestore.instance.collection("users").doc(id).set({
       "Wallet": amount,
-    });
+    }, SetOptions(merge: true));
+  }
+
+  Future<Stream<QuerySnapshot>> getAdminOrders() async {
+    return await FirebaseFirestore.instance
+        .collection("Orders")
+        .where("Status", isEqualTo: "Pending")
+        .snapshots();
+  }
+
+  Future updateAdminOrder(String id) async {
+    return await FirebaseFirestore.instance.collection("Orders").doc(id).update(
+      {"Status": "Delivered"},
+    );
+  }
+
+  Future updateUserOrder(String userid, String id) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(userid)
+        .collection("Orders")
+        .doc(id)
+        .update({"Status": "Delivered"});
+  }
+
+  Future<Stream<QuerySnapshot>> getAllUsers() async {
+    return await FirebaseFirestore.instance.collection("users").snapshots();
+  }
+
+  Future deleteUser(String id) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .delete();
+  }
+
+  Future addUserTransaction(
+    Map<String, dynamic> userOrderMap,
+    String id,
+  ) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .collection("Transaction")
+        .add(userOrderMap);
+  }
+
+  Future<Stream<QuerySnapshot>> getUserTransactions(String id) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .collection("Transaction")
+        .snapshots();
+  }
+
+  Future<QuerySnapshot> search(String updatedname) async {
+    return await FirebaseFirestore.instance
+        .collection("Food")
+        .where(
+          "SearchKey",
+          isEqualTo: updatedname.substring(0, 1).toUpperCase(),
+        )
+        .get();
   }
 }

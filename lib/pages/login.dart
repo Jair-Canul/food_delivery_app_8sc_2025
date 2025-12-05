@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app_8sc_2025/pages/bottomnav.dart';
 import 'package:food_delivery_app_8sc_2025/pages/signup.dart';
+import 'package:food_delivery_app_8sc_2025/service/shared_pref.dart';
 import 'package:food_delivery_app_8sc_2025/service/widget_support.dart';
 
 class LogIn extends StatefulWidget {
@@ -13,12 +14,13 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
-  String email = "", password = "", name = "";
-  TextEditingController namecontroller = TextEditingController();
-  TextEditingController passwordcontroller = TextEditingController();
-  TextEditingController mailcontroller = TextEditingController();
+  String email = "", password = "", name = ""; //Se fuarda antes de envíarlo a la base de datos
+  TextEditingController namecontroller = new TextEditingController();
 
-  bool _isObscure = false;
+  ///Controla la edición del texto
+  TextEditingController passwordcontroller = new TextEditingController();
+  TextEditingController mailcontroller = new TextEditingController();
+  bool _isPasswordVisible = false;
 
   userLogin() async {
     try {
@@ -40,7 +42,7 @@ class _LogInState extends State<LogIn> {
             ),
           ),
         );
-      } else if (e.code == 'wrong-passwrod') {
+      } else if (e.code == 'wrong-password') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -55,76 +57,60 @@ class _LogInState extends State<LogIn> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: Container(
-        child: SingleChildScrollView(
-          // Agregamos un padding final al SingleChildScrollView para que el contenido no quede pegado al borde y dé espacio para el scroll
-          padding: EdgeInsets.only(bottom: 50.0),
-          child: Stack(
-            children: [
-              // ----------------------------------------------------
-              // CONTENEDOR AMARILLO SUPERIOR (Header)
-              // ----------------------------------------------------
-              Container(
-                height: screenHeight / 2.5, // Mantenemos la proporción
-                padding: EdgeInsets.only(top: 30),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Color(0xffffefbf),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(40),
-                    bottomRight: Radius.circular(40),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      "images/pan.png",
-                      height: 120,
-                      fit: BoxFit.fill,
-                      width: 180,
-                    ),
-                    Image.asset(
-                      "images/logo.png",
-                      width: 150,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    ),
-                  ],
+        child: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height / 2.5,
+              padding: EdgeInsets.only(top: 30.0),
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: Color(0xffffefbf),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40),
                 ),
               ),
-
-              // ----------------------------------------------------
-              // TARJETA BLANCA (Formulario)
-              // ----------------------------------------------------
-              Container(
-                margin: EdgeInsets.only(
-                  // AJUSTE CRÍTICO: Reducimos el margen superior para que la tarjeta suba un poco
-                  // screenHeight / 2.5 es 0.40. Usaremos 0.38 para un leve solapamiento más alto.
-                  top: screenHeight * 0.32,
-                  left: 20.0,
-                  right: 20.0,
-                ),
-                child: Material(
-                  elevation: 3.0,
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    // ELIMINAMOS LA ALTURA FIJA:
-                    // height: MediaQuery.of(context).size.height / 1.8, <--- ELIMINADO
+              child: Column(
+                children: [
+                  Image.asset(
+                    "images/pan.png",
+                    height: 180,
+                    fit: BoxFit.fill,
+                    width: 240,
+                  ),
+                  Image.asset(
+                    "images/logo.png",
+                    width: 150,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height / 3.2,
+                left: 20.0,
+                right: 20.0,
+              ),
+              child: Material(
+                elevation: 3.0,
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  height: MediaQuery.of(context).size.height / 1.65,
+                  child: SingleChildScrollView(
                     child: Column(
-                      // IMPORTANTE: Permite que el Column use el mínimo espacio vertical necesario
-                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20),
+                        SizedBox(height: 20.0),
                         Center(
                           child: Text(
                             "LogIn",
@@ -132,8 +118,6 @@ class _LogInState extends State<LogIn> {
                           ),
                         ),
                         SizedBox(height: 10.0),
-
-                        // Campos de Texto (Name, Email, Password)
                         SizedBox(height: 20.0),
                         Text("Email", style: AppWidget.SignUpTextFeildStyle()),
                         SizedBox(height: 5.0),
@@ -151,7 +135,6 @@ class _LogInState extends State<LogIn> {
                             ),
                           ),
                         ),
-
                         SizedBox(height: 20.0),
                         Text(
                           "Password",
@@ -164,23 +147,23 @@ class _LogInState extends State<LogIn> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
-                            obscureText: _isObscure,
+                            obscureText: !_isPasswordVisible,
                             controller: passwordcontroller,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Enter Password",
                               prefixIcon: Icon(Icons.password_outlined),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isObscure
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: () {
+                              suffixIcon: GestureDetector(
+                                onTap: () {
                                   setState(() {
-                                    _isObscure = !_isObscure;
+                                    _isPasswordVisible = !_isPasswordVisible;
                                   });
                                 },
+                                child: Icon(
+                                  _isPasswordVisible
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
                               ),
                             ),
                           ),
@@ -196,7 +179,6 @@ class _LogInState extends State<LogIn> {
                           ],
                         ),
                         SizedBox(height: 40.0),
-                        // Botón Sign Up
                         GestureDetector(
                           onTap: () {
                             if (mailcontroller.text != "" &&
@@ -214,25 +196,23 @@ class _LogInState extends State<LogIn> {
                               height: 60,
                               decoration: BoxDecoration(
                                 color: Color(0xffef2b39),
-                                borderRadius: BorderRadius.circular(
-                                  10,
-                                ), // Agregamos bordes redondeados
+                                borderRadius: BorderRadius.circular(30),
                               ),
                               child: Center(
                                 child: Text(
                                   "Log In",
-                                  style: AppWidget.whiteTextFeildStyle(),
+                                  style: AppWidget.boldwhiteTextFeildStyle(),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(height: 10.0),
+                        SizedBox(height: 30.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Don't have an account? ",
+                              "Don't have account?",
                               style: AppWidget.SimpleTextFeildStyle(),
                             ),
                             SizedBox(width: 10.0),
@@ -252,16 +232,13 @@ class _LogInState extends State<LogIn> {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 20.0,
-                        ), // Espacio final dentro de la tarjeta
                       ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
